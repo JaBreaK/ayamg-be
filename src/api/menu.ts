@@ -3,11 +3,11 @@ import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL as string, process.env.SUPABASE_SERVICE_KEY as string);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL as string, process.env.SUPABASE_SECRET_KEY as string);
 
-export async function createMenu(req: Request,  res: Response) {
+export async function createMenu(req: Request, res: Response) {
   try {
-    const { nama_produk,  deskripsi, harga, kategori_id } = req.body;
+    const { nama_produk, deskripsi, harga, kategori_id } = req.body;
     const gambar = req.file;
 
     if (!gambar) {
@@ -28,7 +28,7 @@ export async function createMenu(req: Request,  res: Response) {
     const { data: publicUrlData } = supabase.storage
       .from('uploads')
       .getPublicUrl(namaFile);
-    
+
     const gambar_url = publicUrlData.publicUrl;
 
     const newProduk = await prisma.produk.create({
@@ -40,7 +40,7 @@ export async function createMenu(req: Request,  res: Response) {
         gambar_url: gambar_url,
       },
     });
-    
+
     res.status(201).json(newProduk);
   } catch (error) {
     console.error("Error creating produk:", error);
@@ -56,7 +56,7 @@ export async function getMenu(req: Request, res: Response) {
       },
     });
     res.status(200).json(produk);
-  }  catch (error) {
+  } catch (error) {
     console.error("Gagal mengambil Produk:", error);
     res.status(500).json({ message: "Error fetching produk" });
   }
@@ -101,23 +101,23 @@ export async function updateMenu(req: Request, res: Response) {
       if (uploadError) {
         throw new Error(`Gagal upload ke Supabase: ${uploadError.message}`);
       }
-      
+
       const { data: publicUrlData } = supabase.storage
         .from('uploads')
         .getPublicUrl(namaFile);
-      
+
       gambar_url = publicUrlData.publicUrl;
     }
 
     const dataToUpdate: any = {
-        nama_produk,
-        deskripsi,
-        harga: Number(harga),
-        kategori_id: Number(kategori_id),
+      nama_produk,
+      deskripsi,
+      harga: Number(harga),
+      kategori_id: Number(kategori_id),
     };
 
     if (gambar_url) {
-        dataToUpdate.gambar_url = gambar_url;
+      dataToUpdate.gambar_url = gambar_url;
     }
 
     const updatedProduk = await prisma.produk.update({
@@ -143,6 +143,6 @@ export async function deleteMenu(req: Request, res: Response) {
     res.json({ message: "Produk berhasil dihapus" });
   } catch (error) {
     console.error("Error deleting produk:", error);
-    res.status( 500).json({ message: "Terjadi kesalahan saat menghapus data" });
+    res.status(500).json({ message: "Terjadi kesalahan saat menghapus data" });
   }
 }

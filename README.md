@@ -38,6 +38,10 @@ REST API untuk sistem pemesanan Ayam Geprek Mamank, dibangun menggunakan **Expre
     # Security
     JWT_SECRET="rahasia_negara_12345"
 
+    # Supabase (Storage)
+    NEXT_PUBLIC_SUPABASE_URL="[SUPABASE_URL]"
+    SUPABASE_SECRET_KEY="[SUPABASE_SECRET_KEY]"
+
     # Server
     PORT=3001
     ```

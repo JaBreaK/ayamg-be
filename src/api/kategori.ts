@@ -10,7 +10,7 @@ export async function getKategori(req: Request, res: Response) {
     });
     res.json(kategori);
   } catch (error) {
-    console.error("Gagal mengambil kategori:", error); 
+    console.error("Gagal mengambil kategori:", error);
     res.status(500).json({ message: "Gagal mengambil data" });
   }
 }
@@ -18,7 +18,7 @@ export async function getKategori(req: Request, res: Response) {
 export async function createKategori(req: Request, res: Response) {
   try {
     const { nama_kategori } = req.body;
-    const newKategori =  prisma.kategori.create({
+    const newKategori = await prisma.kategori.create({
       data: { nama_kategori },
     });
     res.status(201).json(newKategori);
@@ -34,7 +34,7 @@ export async function updateKategori(req: Request, res: Response) {
     const numericId = parseInt(id);
     const { nama_kategori } = req.body;
 
-    const updatedKategori =  prisma.kategori.update({
+    const updatedKategori = await prisma.kategori.update({
       where: { id: numericId },
       data: { nama_kategori },
     });

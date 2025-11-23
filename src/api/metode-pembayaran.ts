@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL as string, process.env.SUPABASE_SERVICE_KEY as string);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL as string, process.env.SUPABASE_SECRET_KEY as string);
 
 export async function getMetodePembayaran(req: Request, res: Response) {
   try {
@@ -21,7 +21,7 @@ export async function getMetodePembayaran(req: Request, res: Response) {
 export async function createMetodePembayaran(req: Request, res: Response) {
   try {
     const { nama_metode, is_active } = req.body;
-    const newMethod = await prisma.  metodepembayaran.create({
+    const newMethod = await prisma.metodepembayaran.create({
       data: {
         nama_metode,
         is_active: Boolean(is_active),
@@ -40,7 +40,7 @@ export async function updateMetodePembayaran(req: Request, res: Response) {
     const numericId = parseInt(id);
     const { nama_metode, nomor_rekening, nama_rekening } = req.body;
     const gambar_qris = req.file;
-    
+
     let gambar_qris_url: string | undefined = undefined;
 
     if (gambar_qris) {
@@ -55,11 +55,11 @@ export async function updateMetodePembayaran(req: Request, res: Response) {
       if (uploadError) {
         throw new Error(`Gagal upload QRIS ke Supabase: ${uploadError.message}`);
       }
-      
+
       const { data: publicUrlData } = supabase.storage
         .from('qris-images')
         .getPublicUrl(namaFile);
-      
+
       gambar_qris_url = publicUrlData.publicUrl;
     }
 
@@ -77,7 +77,7 @@ export async function updateMetodePembayaran(req: Request, res: Response) {
       where: { id: numericId },
       data: dataToUpdate,
     });
-    
+
     res.json(updatedMethod);
   } catch (error) {
     console.error(error);
