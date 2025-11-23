@@ -135,11 +135,8 @@ export async function createOrder(req: Request, res: Response) {
     let paymentUrl = null;
     if (tipe_pesanan === 'ONLINE' && finalStatusPembayaran === 'BELUM_BAYAR') {
       const slug = process.env.PAKASIR_PROJECT_SLUG;
-      // Construct redirect URL (frontend URL)
-      // Assuming frontend is running on same host but different port or we use referer
-      // For now hardcode localhost:3000 or use env if available. 
-      // Better: use a generic success page or the order detail page.
-      const redirectUrl = `http://localhost:3000/pesanan/${createdOrder.id}`;
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const redirectUrl = `${frontendUrl}/pesanan/${createdOrder.id}`;
 
       paymentUrl = `https://app.pakasir.com/pay/${slug}/${Math.ceil(total_harga)}?order_id=${createdOrder.id}&redirect=${encodeURIComponent(redirectUrl)}`;
     }
